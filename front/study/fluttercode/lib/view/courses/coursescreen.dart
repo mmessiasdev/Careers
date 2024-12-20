@@ -163,12 +163,13 @@ class _CourseScreenState extends State<CourseScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Icon(Icons.card_giftcard),
+                                      Icon(Icons.credit_card),
                                       SubTextSized(
-                                          text: render["price"] ?? "Grátis",
-                                          size: 26,
-                                          align: TextAlign.end,
-                                          fontweight: FontWeight.w600),
+                                        text: render["price"] ?? "Grátis",
+                                        size: 26,
+                                        align: TextAlign.end,
+                                        fontweight: FontWeight.w600,
+                                      ),
                                     ],
                                   ),
                                   SizedBox(
@@ -201,53 +202,59 @@ class _CourseScreenState extends State<CourseScreen> {
                           ),
                         );
                       }),
-                  Column(
-                    children: [
-                      SecundaryText(
-                          text: "Vídeos do Curso",
-                          color: nightColor,
-                          align: TextAlign.start),
-                      FutureBuilder<List<Videos>>(
-                        future: RemoteAuthService().getOneCourseVideos(
-                            token: token, id: widget.id.toString()),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return ListView.builder(
-                              // gridDelegate:
-                              //     const SliverGridDelegateWithFixedCrossAxisCount(
-                              //   crossAxisCount: 2,
-                              //   crossAxisSpacing: 1,
-                              //   mainAxisSpacing: 1,
-                              //   childAspectRatio: 0.75, // Proporção padrão
-                              // ),
-                              itemCount: snapshot.data!.length,
-                              shrinkWrap: true,
-                              scrollDirection: Axis.vertical,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                var renders = snapshot.data![index];
-                                if (renders != null) {
-                                  return VideoContent(
+                  Padding(
+                    padding: defaultPadding,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SecundaryText(
+                            text: "Vídeos do Curso",
+                            color: nightColor,
+                            align: TextAlign.start),
+                        FutureBuilder<List<Videos>>(
+                          future: RemoteAuthService().getOneCourseVideos(
+                              token: token, id: widget.id.toString()),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return ListView.builder(
+                                // gridDelegate:
+                                //     const SliverGridDelegateWithFixedCrossAxisCount(
+                                //   crossAxisCount: 2,
+                                //   crossAxisSpacing: 1,
+                                //   mainAxisSpacing: 1,
+                                //   childAspectRatio: 0.75, // Proporção padrão
+                                // ),
+                                itemCount: snapshot.data!.length,
+                                shrinkWrap: true,
+                                scrollDirection: Axis.vertical,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  var renders = snapshot.data![index];
+                                  if (renders != null) {
+                                    return VideoContent(
                                       urlThumb: widget.urlbanner,
                                       time: renders.time.toString(),
                                       title: renders.name.toString(),
-                                      id: renders.id.toString());
-                                }
-                                return SizedBox(
-                                  height: 300,
-                                  child: ErrorPost(
-                                      text:
-                                          'Não encontrado. \n\nVerifique sua conexão, por gentileza.'),
-                                );
-                              },
-                            );
-                          }
-                          return SizedBox(
+                                      id: renders.id.toString(),
+                                    );
+                                  }
+                                  return SizedBox(
+                                    height: 300,
+                                    child: ErrorPost(
+                                        text:
+                                            'Não encontrado. \n\nVerifique sua conexão, por gentileza.'),
+                                  );
+                                },
+                              );
+                            }
+                            return SizedBox(
                               height: 300,
-                              child: ErrorPost(text: 'Carregando...'));
-                        },
-                      )
-                    ],
+                              child: ErrorPost(text: 'Carregando...'),
+                            );
+                          },
+                        )
+                      ],
+                    ),
                   )
                 ],
               ),

@@ -2,6 +2,7 @@ import 'package:Consult/component/colors.dart';
 import 'package:Consult/component/padding.dart';
 import 'package:Consult/component/texts.dart';
 import 'package:Consult/view/courses/coursescreen.dart';
+import 'package:Consult/view/courses/videoscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -20,7 +21,6 @@ class CourseContent extends StatelessWidget {
 
   final String? subtitle;
   final String? time;
-
   final String title;
   final String? urlThumb;
   String id;
@@ -170,6 +170,7 @@ class VideoContent extends StatelessWidget {
   TextOverflow? over;
   Color? bgcolor;
   String? urlbanner;
+  bool whatch = false;
 
   @override
   Widget build(BuildContext context) {
@@ -180,9 +181,9 @@ class VideoContent extends StatelessWidget {
           (Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => CourseScreen(
+                builder: (context) => VideoScreen(
                       id: id,
-                      urlbanner: urlbanner ?? "",
+                      urlbanner: urlThumb ?? "",
                     )),
           ));
         },
@@ -224,6 +225,34 @@ class VideoContent extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        whatch == false
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SubText(
+                                    text: "Video não assistido",
+                                    align: TextAlign.center,
+                                    color: FifthColor,
+                                  ),
+                                  Icon(
+                                    Icons.cancel,
+                                    color: FifthColor,
+                                  ),
+                                ],
+                              )
+                            : Row(
+                                children: [
+                                  SubText(
+                                    text: "Video assistido",
+                                    align: TextAlign.center,
+                                    color: FifthColor,
+                                  ),
+                                  Icon(
+                                    Icons.check,
+                                    color: SeventhColor,
+                                  ),
+                                ],
+                              ),
                         SecundaryText(
                           text: title,
                           color: nightColor,
@@ -231,7 +260,7 @@ class VideoContent extends StatelessWidget {
                           maxl: maxl,
                           over: over,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         Row(
@@ -251,10 +280,10 @@ class VideoContent extends StatelessWidget {
                             Icon(Icons.timer),
                           ],
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
-                        CircleAvatar(
+                        const CircleAvatar(
                           child: Icon(
                             Icons.play_arrow_rounded,
                             size: 40,

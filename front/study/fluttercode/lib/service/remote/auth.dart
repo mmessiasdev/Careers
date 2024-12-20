@@ -156,7 +156,7 @@ class RemoteAuthService {
     required String? token,
   }) async {
     var response = await client.get(
-      Uri.parse('${url.toString()}/categories/$id'),
+      Uri.parse('${url.toString()}/videos/$id'),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $token",
