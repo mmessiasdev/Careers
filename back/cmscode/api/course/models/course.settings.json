@@ -1,0 +1,49 @@
+{
+  "kind": "collectionType",
+  "collectionName": "courses",
+  "info": {
+    "name": "Course",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "desc": {
+      "type": "string"
+    },
+    "nivel": {
+      "type": "string"
+    },
+    "time": {
+      "type": "integer"
+    },
+    "enterprise": {
+      "model": "enterprise",
+      "via": "courses"
+    },
+    "videos": {
+      "via": "course",
+      "collection": "video"
+    },
+    "urlbanner": {
+      "type": "string"
+    },
+    "price": {
+      "type": "string"
+    },
+    "private": {
+      "type": "boolean"
+    },
+    "categories": {
+      "via": "courses",
+      "collection": "category"
+    }
+  }
+}
