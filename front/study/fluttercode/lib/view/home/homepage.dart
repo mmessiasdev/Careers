@@ -320,7 +320,8 @@ class _HomePageState extends State<HomePage> {
                                     itemBuilder: (context, index) {
                                       var renders = snapshot.data![index];
                                       return CourseContent(
-                                        urlLogo: renders.urlbanner.toString(),
+                                        
+                                        urlThumb: renders.urlbanner.toString(),
                                         subtitle: "${renders.desc}",
                                         title: renders.title.toString(),
                                         id: renders.id.toString(),

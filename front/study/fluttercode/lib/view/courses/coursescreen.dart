@@ -17,8 +17,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 
 class CourseScreen extends StatefulWidget {
-  CourseScreen({super.key, required this.id});
+  CourseScreen({super.key, required this.id, required this.urlbanner});
   String id;
+  String urlbanner;
 
   @override
   State<CourseScreen> createState() => _CourseScreenState();
@@ -70,19 +71,19 @@ class _CourseScreenState extends State<CourseScreen> {
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           var render = snapshot.data!;
-
                           return SizedBox(
                             child: Padding(
                               padding: defaultPaddingHorizon,
                               child: Column(
                                 children: [
                                   MainHeader(
-                                      maxl: 4,
-                                      title: "NIDE",
-                                      icon: Icons.arrow_back_ios,
-                                      onClick: () {
-                                        (Navigator.pop(context));
-                                      }),
+                                    maxl: 4,
+                                    title: "NIDE",
+                                    icon: Icons.arrow_back_ios,
+                                    onClick: () {
+                                      (Navigator.pop(context));
+                                    },
+                                  ),
                                   Padding(
                                     padding: defaultPaddingVertical,
                                     child: ClipRRect(
@@ -93,9 +94,10 @@ class _CourseScreenState extends State<CourseScreen> {
                                     ),
                                   ),
                                   SecundaryText(
-                                      text: render["title"],
-                                      color: nightColor,
-                                      align: TextAlign.center),
+                                    text: render["title"],
+                                    color: nightColor,
+                                    align: TextAlign.center,
+                                  ),
                                   SizedBox(
                                     height: 35,
                                   ),
@@ -199,48 +201,54 @@ class _CourseScreenState extends State<CourseScreen> {
                           ),
                         );
                       }),
-                  SecundaryText(
-                      text: "Vídeos do Curso",
-                      color: nightColor,
-                      align: TextAlign.start),
-                  SizedBox(
-                    height: 400,
-                    child: FutureBuilder<List<Videos>>(
-                      future: RemoteAuthService().getOneCourseVideos(
-                          token: token, id: widget.id.toString()),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return ListView.builder(
-                            // gridDelegate:
-                            //     const SliverGridDelegateWithFixedCrossAxisCount(
-                            //   crossAxisCount: 2,
-                            //   crossAxisSpacing: 1,
-                            //   mainAxisSpacing: 1,
-                            //   childAspectRatio: 0.75, // Proporção padrão
-                            // ),
-                            itemCount: snapshot.data!.length,
-                            scrollDirection: Axis.vertical,
-                            itemBuilder: (context, index) {
-                              var renders = snapshot.data![index];
-                              if (renders != null) {
-                                return CourseContent(
-                                    title: renders.name.toString(),
-                                    id: renders.id.toString());
-                              }
-                              return SizedBox(
+                  Column(
+                    children: [
+                      SecundaryText(
+                          text: "Vídeos do Curso",
+                          color: nightColor,
+                          align: TextAlign.start),
+                      FutureBuilder<List<Videos>>(
+                        future: RemoteAuthService().getOneCourseVideos(
+                            token: token, id: widget.id.toString()),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return ListView.builder(
+                              // gridDelegate:
+                              //     const SliverGridDelegateWithFixedCrossAxisCount(
+                              //   crossAxisCount: 2,
+                              //   crossAxisSpacing: 1,
+                              //   mainAxisSpacing: 1,
+                              //   childAspectRatio: 0.75, // Proporção padrão
+                              // ),
+                              itemCount: snapshot.data!.length,
+                              shrinkWrap: true,
+                              scrollDirection: Axis.vertical,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                var renders = snapshot.data![index];
+                                if (renders != null) {
+                                  return VideoContent(
+                                      urlThumb: widget.urlbanner,
+                                      time: renders.time.toString(),
+                                      title: renders.name.toString(),
+                                      id: renders.id.toString());
+                                }
+                                return SizedBox(
                                   height: 300,
                                   child: ErrorPost(
                                       text:
-                                          'Não encontrado. \n\nVerifique sua conexão, por gentileza.'));
-                            },
-                          );
-                        }
-                        return SizedBox(
-                            height: 300,
-                            child: ErrorPost(text: 'Carregando...'));
-                      },
-                    ),
-                  ),
+                                          'Não encontrado. \n\nVerifique sua conexão, por gentileza.'),
+                                );
+                              },
+                            );
+                          }
+                          return SizedBox(
+                              height: 300,
+                              child: ErrorPost(text: 'Carregando...'));
+                        },
+                      )
+                    ],
+                  )
                 ],
               ),
       ),

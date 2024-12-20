@@ -121,7 +121,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                 var renders = snapshot.data![index];
                                 if (renders != null) {
                                   return CourseContent(
-                                    urlLogo: renders.urlbanner.toString(),
+                                    urlThumb: renders.urlbanner.toString(),
                                     subtitle: "${renders.desc}",
                                     title: renders.title.toString(),
                                     id: renders.id.toString(),

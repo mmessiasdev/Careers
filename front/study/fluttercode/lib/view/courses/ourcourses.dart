@@ -74,7 +74,7 @@ class _OurCoursesState extends State<OurCourses> {
                               return Padding(
                                 padding: defaultPaddingHorizon,
                                 child: CourseContent(
-                                  urlLogo: renders.urlbanner.toString(),
+                                  urlThumb: renders.urlbanner.toString(),
                                   subtitle: "${renders.desc}",
                                   title: renders.time.toString(),
                                   id: renders.id.toString(),

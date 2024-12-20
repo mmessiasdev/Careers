@@ -11,7 +11,7 @@ class CourseContent extends StatelessWidget {
       this.subtitle,
       this.time,
       required this.title,
-      this.urlLogo,
+      this.urlThumb,
       this.maxl,
       this.over,
       this.bgcolor,
@@ -22,7 +22,7 @@ class CourseContent extends StatelessWidget {
   final String? time;
 
   final String title;
-  final String? urlLogo;
+  final String? urlThumb;
   String id;
   int? maxl;
   String? price;
@@ -37,7 +37,11 @@ class CourseContent extends StatelessWidget {
         onTap: () {
           (Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CourseScreen(id: id)),
+            MaterialPageRoute(
+                builder: (context) => CourseScreen(
+                      id: id,
+                      urlbanner: urlThumb ?? "",
+                    )),
           ));
         },
         child: Container(
@@ -63,10 +67,10 @@ class CourseContent extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
-                    child: urlLogo == ""
+                    child: urlThumb == ""
                         ? SizedBox()
                         : Image.network(
-                            urlLogo ?? "",
+                            urlThumb ?? "",
                             fit: BoxFit.cover,
                           ),
                   ),
@@ -147,10 +151,11 @@ class VideoContent extends StatelessWidget {
       this.subtitle,
       this.time,
       required this.title,
-      this.urlLogo,
+      this.urlThumb,
       this.maxl,
       this.over,
       this.bgcolor,
+      this.urlbanner,
       this.price,
       required this.id});
 
@@ -158,12 +163,13 @@ class VideoContent extends StatelessWidget {
   final String? time;
 
   final String title;
-  final String? urlLogo;
+  final String? urlThumb;
   String id;
   int? maxl;
   String? price;
   TextOverflow? over;
   Color? bgcolor;
+  String? urlbanner;
 
   @override
   Widget build(BuildContext context) {
@@ -173,10 +179,15 @@ class VideoContent extends StatelessWidget {
         onTap: () {
           (Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CourseScreen(id: id)),
+            MaterialPageRoute(
+                builder: (context) => CourseScreen(
+                      id: id,
+                      urlbanner: urlbanner ?? "",
+                    )),
           ));
         },
         child: Container(
+          height: 250,
           decoration: BoxDecoration(
             color: bgcolor ?? lightColor,
             borderRadius: BorderRadius.circular(25),
@@ -190,86 +201,71 @@ class VideoContent extends StatelessWidget {
               ),
             ],
           ),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 180,
-                height: 250,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: urlLogo == ""
-                        ? SizedBox()
-                        : Image.network(
-                            urlLogo ?? "",
-                            fit: BoxFit.cover,
-                          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Expanded(
+              child: Stack(
+                children: [
+                  // Imagem de fundo
+                  Positioned.fill(
+                    child: Opacity(
+                      opacity: 0.3, // Ajuste a opacidade conforme necessário
+                      child: Image.network(
+                        urlThumb ?? "", // Substitua pelo caminho da sua imagem
+                        fit: BoxFit
+                            .cover, // Para cobrir todo o espaço disponível
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      SecundaryText(
-                        text: title,
-                        color: nightColor,
-                        align: TextAlign.start,
-                        maxl: maxl,
-                        over: over,
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      SubText(
-                        text: subtitle ?? "",
-                        color: nightColor,
-                        align: TextAlign.start,
-                        maxl: 8,
-                        over: TextOverflow.fade,
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      SubText(
-                        text: time ?? "",
-                        color: OffColor,
-                        align: TextAlign.start,
-                        maxl: 2,
-                        over: over,
-                      ),
-                      SizedBox(
-                        height: 35,
-                      ),
-                      SubTextSized(
-                          text: price ?? "Grátis",
-                          size: 26,
-                          align: TextAlign.end,
-                          fontweight: FontWeight.w600),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                            color: SeventhColor,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SubText(
-                            text: "Acessar",
-                            align: TextAlign.center,
-                            color: lightColor,
+                  // Conteúdo sobre a imagem
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SecundaryText(
+                          text: title,
+                          color: nightColor,
+                          align: TextAlign.center,
+                          maxl: maxl,
+                          over: over,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SubText(
+                              text: "${time ?? "0"} minutos",
+                              color: nightColor,
+                              align: TextAlign.start,
+                              maxl: 8,
+                              over: TextOverflow.fade,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Icon(Icons.timer),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        CircleAvatar(
+                          child: Icon(
+                            Icons.play_arrow_rounded,
+                            size: 40,
                           ),
                         ),
-                      )
-                    ],
+                      ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

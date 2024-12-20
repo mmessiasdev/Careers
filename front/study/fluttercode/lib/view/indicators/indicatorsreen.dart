@@ -184,7 +184,7 @@ class _IndicatorsScreenState extends State<IndicatorsScreen> {
                               var renders = planSnapshot.data![index];
                               if (renders != null) {
                                 return CourseContent(
-                                  urlLogo: renders.urlbanner.toString(),
+                                  urlThumb: renders.urlbanner.toString(),
                                   subtitle: "${renders.desc}",
                                   title: renders.time.toString(),
                                   id: renders.id.toString(),
