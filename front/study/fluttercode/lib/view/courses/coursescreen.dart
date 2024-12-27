@@ -34,6 +34,7 @@ class _CourseScreenState extends State<CourseScreen> {
   var chunkId;
   var fileBytes;
   var fileName;
+  bool isLoadingToken = true; // Adicionado estado de carregamento do token
 
   @override
   void initState() {
@@ -45,15 +46,9 @@ class _CourseScreenState extends State<CourseScreen> {
     var strToken = await LocalAuthService().getSecureToken("token");
 
     setState(() {
-      token = strToken.toString();
+      token = strToken;
+      isLoadingToken = false; // Token carregado
     });
-  }
-
-  // Função para abrir o link
-  Future<void> _launchURL(urlAff) async {
-    if (!await launchUrl(urlAff, mode: LaunchMode.externalApplication)) {
-      throw 'Could not launch $urlAff';
-    }
   }
 
   @override
@@ -187,7 +182,7 @@ class _CourseScreenState extends State<CourseScreen> {
                           return Expanded(
                             child: Center(
                                 child: SubText(
-                              text: 'Erro ao pesquisar Store',
+                              text: 'Erro ao pesquisar Curso',
                               color: PrimaryColor,
                               align: TextAlign.center,
                             )),
@@ -213,43 +208,68 @@ class _CourseScreenState extends State<CourseScreen> {
                             align: TextAlign.start),
                         FutureBuilder<List<Videos>>(
                           future: RemoteAuthService().getOneCourseVideos(
-                              token: token, id: widget.id.toString()),
+                            token: token,
+                            id: widget.id.toString(),
+                          ),
                           builder: (context, snapshot) {
-                            if (snapshot.hasData) {
+                            print('TESTEEE ${snapshot}');
+
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              // Enquanto os dados estão sendo carregados
+                              return SizedBox(
+                                height: 300,
+                                child: ErrorPost(text: 'Carregando...'),
+                              );
+                            }
+
+                            if (snapshot.hasError) {
+                              print('TESTEEE ${snapshot}');
+                              // Caso ocorra um erro na requisição
+                              return SizedBox(
+                                height: 300,
+                                child: ErrorPost(
+                                  text:
+                                      'Erro ao carregar vídeos.\n\nVerifique sua conexão.',
+                                ),
+                              );
+                            }
+
+                            if (snapshot.hasData && snapshot.data != null) {
+                              // Caso os dados sejam carregados com sucesso
+                              final videos = snapshot.data!;
+                              if (videos.isEmpty) {
+                                return SizedBox(
+                                  height: 300,
+                                  child: ErrorPost(
+                                    text: 'Nenhum vídeo encontrado.',
+                                  ),
+                                );
+                              }
+
                               return ListView.builder(
-                                // gridDelegate:
-                                //     const SliverGridDelegateWithFixedCrossAxisCount(
-                                //   crossAxisCount: 2,
-                                //   crossAxisSpacing: 1,
-                                //   mainAxisSpacing: 1,
-                                //   childAspectRatio: 0.75, // Proporção padrão
-                                // ),
-                                itemCount: snapshot.data!.length,
+                                itemCount: videos.length,
                                 shrinkWrap: true,
                                 scrollDirection: Axis.vertical,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemBuilder: (context, index) {
-                                  var renders = snapshot.data![index];
-                                  if (renders != null) {
-                                    return VideoContent(
-                                      urlThumb: widget.urlbanner,
-                                      time: renders.time.toString(),
-                                      title: renders.name.toString(),
-                                      id: renders.id.toString(),
-                                    );
-                                  }
-                                  return SizedBox(
-                                    height: 300,
-                                    child: ErrorPost(
-                                        text:
-                                            'Não encontrado. \n\nVerifique sua conexão, por gentileza.'),
+                                  final video = videos[index];
+                                  return VideoContent(
+                                    urlThumb: widget.urlbanner,
+                                    time: video.time.toString(),
+                                    title: video.name.toString(),
+                                    id: video.id.toString(),
                                   );
                                 },
                               );
                             }
+                            // Caso nenhum dado seja retornado
                             return SizedBox(
                               height: 300,
-                              child: ErrorPost(text: 'Carregando...'),
+                              child: ErrorPost(
+                                text:
+                                    'Não encontrado. \n\nVerifique sua conexão, por gentileza.',
+                              ),
                             );
                           },
                         )

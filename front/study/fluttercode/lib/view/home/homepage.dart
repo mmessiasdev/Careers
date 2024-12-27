@@ -61,12 +61,14 @@ class _HomePageState extends State<HomePage> {
     var strIdInterprise =
         await LocalAuthService().getIdInterprise("idInterprise");
 
-    setState(() {
-      token = strToken.toString();
-      fullname = strfullname;
+    if (mounted) {
+      setState(() {
+        token = strToken.toString();
+        fullname = strfullname;
 
-      idInterprise = strIdInterprise.toString();
-    });
+        idInterprise = strIdInterprise.toString();
+      });
+    }
   }
 
   TextEditingController cpf = TextEditingController();
@@ -149,7 +151,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return token == null
         ? const SizedBox()
         : SafeArea(
@@ -320,7 +321,6 @@ class _HomePageState extends State<HomePage> {
                                     itemBuilder: (context, index) {
                                       var renders = snapshot.data![index];
                                       return CourseContent(
-                                        
                                         urlThumb: renders.urlbanner.toString(),
                                         subtitle: "${renders.desc}",
                                         title: renders.title.toString(),

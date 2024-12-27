@@ -22,7 +22,7 @@
       "type": "string"
     },
     "time": {
-      "type": "decimal"
+      "type": "integer"
     },
     "public": {
       "type": "boolean"

@@ -1,4 +1,4 @@
-class OneCourseModel {
+class OneCourse {
   int? id;
   String? title;
   String? desc;
@@ -14,7 +14,7 @@ class OneCourseModel {
   List<Videos>? videos;
   List<Categories>? categories;
 
-  OneCourseModel(
+  OneCourse(
       {this.id,
       this.title,
       this.desc,
@@ -30,7 +30,7 @@ class OneCourseModel {
       this.videos,
       this.categories});
 
-  OneCourseModel.fromJson(Map<String, dynamic> json) {
+  OneCourse.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
     desc = json['desc'];
@@ -86,8 +86,8 @@ class Videos {
   String? name;
   String? desc;
   String? url;
-  double? time;
-  bool? public;
+  int? time;
+  Null? public;
   int? course;
   String? publishedAt;
   String? createdAt;

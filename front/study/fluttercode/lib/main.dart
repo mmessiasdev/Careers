@@ -20,7 +20,7 @@ Future main() async {
     DeviceOrientation.portraitDown // Retrato invertido (se necessário)
   ],);
   // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
+  //   options: DefaultFirebaseOptions.currentPlatform, 
   // );
 
   // OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
