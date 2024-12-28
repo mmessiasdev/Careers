@@ -178,24 +178,24 @@ class VideoContent extends StatelessWidget {
       padding: const EdgeInsets.all(15),
       child: GestureDetector(
         onTap: () {
-          (Navigator.push(
+          Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => VideoScreen(
-                      id: id,
-                      urlbanner: urlThumb ?? "",
-                    )),
-          ));
+              builder: (context) => VideoScreen(
+                id: id,
+                urlbanner: urlThumb ?? "",
+              ),
+            ),
+          );
         },
         child: Container(
-          height: 250,
+          height: 220,
           decoration: BoxDecoration(
             color: bgcolor ?? lightColor,
             borderRadius: BorderRadius.circular(25),
             boxShadow: [
               BoxShadow(
-                color:
-                    Colors.black.withOpacity(0.2), // Cor e opacidade da sombra
+                color: nightColor.withOpacity(0.2), // Cor e opacidade da sombra
                 spreadRadius: 2, // Expansão da sombra
                 blurRadius: 5, // Desfoque
                 offset: Offset(0, 3), // Deslocamento (horizontal, vertical)
@@ -204,96 +204,119 @@ class VideoContent extends StatelessWidget {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: Expanded(
-              child: Stack(
-                children: [
-                  // Imagem de fundo
-                  Positioned.fill(
-                    child: Opacity(
-                      opacity: 0.3, // Ajuste a opacidade conforme necessário
-                      child: Image.network(
-                        urlThumb ?? "", // Substitua pelo caminho da sua imagem
-                        fit: BoxFit
-                            .cover, // Para cobrir todo o espaço disponível
+            child: Stack(
+              children: [
+                // Imagem de fundo
+                Positioned.fill(
+                  child: Image.network(
+                    urlThumb ?? "", // Substitua pelo caminho da sua imagem
+                    fit: BoxFit.cover, // Para cobrir todo o espaço disponível
+                  ),
+                ),
+                // Gradiente horizontal
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        colors: [
+                          SecudaryColor.withOpacity(0.8),
+                          nightColor.withOpacity(0.9),
+                        ],
                       ),
                     ),
                   ),
-                  // Conteúdo sobre a imagem
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        whatch == false
-                            ? Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SubText(
-                                    text: "Video não assistido",
-                                    align: TextAlign.center,
-                                    color: FifthColor,
-                                  ),
-                                  Icon(
-                                    Icons.cancel,
-                                    color: FifthColor,
-                                  ),
-                                ],
-                              )
-                            : Row(
-                                children: [
-                                  SubText(
-                                    text: "Video assistido",
-                                    align: TextAlign.center,
-                                    color: FifthColor,
-                                  ),
-                                  Icon(
-                                    Icons.check,
-                                    color: SeventhColor,
-                                  ),
-                                ],
-                              ),
-                        SecundaryText(
-                          text: title,
-                          color: nightColor,
-                          align: TextAlign.center,
-                          maxl: maxl,
-                          over: over,
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SubText(
-                              text: "${time ?? "0"} minutos",
-                              color: nightColor,
-                              align: TextAlign.start,
-                              maxl: 8,
-                              over: TextOverflow.fade,
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Icon(Icons.timer),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const CircleAvatar(
+                ),
+                // Conteúdo sobre a imagem
+                Padding(
+                  padding: const EdgeInsets.all(25),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          whatch == false
+                              ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    SubText(
+                                      text: "Vídeo não assistido",
+                                      align: TextAlign.end,
+                                      color: FifthColor,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Icon(
+                                      Icons.cancel,
+                                      color: FifthColor,
+                                    ),
+                                  ],
+                                )
+                              : Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    SubText(
+                                      text: "Vídeo assistido",
+                                      align: TextAlign.end,
+                                      color: FifthColor,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Icon(
+                                      Icons.check,
+                                      color: SeventhColor,
+                                    ),
+                                  ],
+                                ),
+                        ],
+                      ),
+                      SecundaryText(
+                        text: title,
+                        color: lightColor,
+                        align: TextAlign.end,
+                        maxl: maxl,
+                        over: over,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SubText(
+                            text: "${time ?? "0"} minutos",
+                            color: lightColor,
+                            align: TextAlign.end,
+                            maxl: 8,
+                            over: TextOverflow.fade,
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Icon(
+                            Icons.timer,
+                            color: lightColor,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Align(
+                        alignment: Alignment.bottomRight,
+                        child: CircleAvatar(
                           child: Icon(
                             Icons.play_arrow_rounded,
                             size: 40,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

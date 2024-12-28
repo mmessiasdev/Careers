@@ -26,15 +26,12 @@ class CourseScreen extends StatefulWidget {
 }
 
 class _CourseScreenState extends State<CourseScreen> {
-  var client = http.Client();
   var email;
-  var lname;
-  var token;
+  var fullname;
+  var cpf;
   var id;
-  var chunkId;
-  var fileBytes;
-  var fileName;
-  bool isLoadingToken = true; // Adicionado estado de carregamento do token
+  var token;
+  var idInterprise;
 
   @override
   void initState() {
@@ -43,12 +40,23 @@ class _CourseScreenState extends State<CourseScreen> {
   }
 
   void getString() async {
+    var strEmail = await LocalAuthService().getEmail("email");
+    var strFullname = await LocalAuthService().getFullName("fullname");
+    var strId = await LocalAuthService().getId("id");
     var strToken = await LocalAuthService().getSecureToken("token");
+    var strIdInterprise =
+        await LocalAuthService().getIdInterprise("idInterprise");
 
-    setState(() {
-      token = strToken;
-      isLoadingToken = false; // Token carregado
-    });
+    if (mounted) {
+      setState(() {
+        email = strEmail.toString();
+        fullname = strFullname.toString();
+        id = strId.toString();
+        idInterprise = strIdInterprise.toString();
+
+        token = strToken.toString();
+      });
+    }
   }
 
   @override
@@ -103,7 +111,14 @@ class _CourseScreenState extends State<CourseScreen> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         GestureDetector(
-                                          onTap: () {},
+                                          onTap: () {
+                                            RemoteAuthService()
+                                                .putFavoriteCourse(
+                                                    fullname: fullname,
+                                                    token: token,
+                                                    id: render["id"].toString(),
+                                                    profileId: id);
+                                          },
                                           child: const Icon(
                                             Icons.favorite,
                                             size: 35,
@@ -135,22 +150,22 @@ class _CourseScreenState extends State<CourseScreen> {
                                   SizedBox(
                                     height: 25,
                                   ),
-                                  Divider(),
-                                  SizedBox(
-                                    height: 25,
-                                  ),
-                                  Padding(
-                                    padding: defaultPaddingVertical,
-                                    child: GestureDetector(
-                                      onTap: () {},
-                                      child: DefaultButton(
-                                        text: "Comprar",
-                                        color: SeventhColor,
-                                        padding: defaultPadding,
-                                        colorText: lightColor,
-                                      ),
-                                    ),
-                                  ),
+                                  // Divider(),
+                                  // SizedBox(
+                                  //   height: 25,
+                                  // ),
+                                  // Padding(
+                                  //   padding: defaultPaddingVertical,
+                                  //   child: GestureDetector(
+                                  //     onTap: () {},
+                                  //     child: DefaultButton(
+                                  //       text: "Comprar",
+                                  //       color: SeventhColor,
+                                  //       padding: defaultPadding,
+                                  //       colorText: lightColor,
+                                  //     ),
+                                  //   ),
+                                  // ),
                                   SizedBox(
                                     height: 10,
                                   ),
@@ -160,7 +175,9 @@ class _CourseScreenState extends State<CourseScreen> {
                                     children: [
                                       Icon(Icons.credit_card),
                                       SubTextSized(
-                                        text: render["price"] ?? "Grátis",
+                                        text: render["price"] == ""
+                                            ? "Grátis"
+                                            : "${render["price"]}R\$",
                                         size: 26,
                                         align: TextAlign.end,
                                         fontweight: FontWeight.w600,
@@ -212,8 +229,6 @@ class _CourseScreenState extends State<CourseScreen> {
                             id: widget.id.toString(),
                           ),
                           builder: (context, snapshot) {
-                            print('TESTEEE ${snapshot}');
-
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
                               // Enquanto os dados estão sendo carregados
@@ -224,7 +239,6 @@ class _CourseScreenState extends State<CourseScreen> {
                             }
 
                             if (snapshot.hasError) {
-                              print('TESTEEE ${snapshot}');
                               // Caso ocorra um erro na requisição
                               return SizedBox(
                                 height: 300,
