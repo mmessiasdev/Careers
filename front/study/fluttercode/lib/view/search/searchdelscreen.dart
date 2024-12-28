@@ -1,7 +1,9 @@
 import 'package:Consult/component/colors.dart';
 import 'package:Consult/component/containersLoading.dart';
 import 'package:Consult/component/contentproduct.dart';
+import 'package:Consult/component/coursecontent.dart';
 import 'package:Consult/component/texts.dart';
+import 'package:Consult/model/courses.dart';
 import 'package:Consult/model/stores.dart';
 import 'package:Consult/service/local/auth.dart';
 import 'package:Consult/service/remote/auth.dart';
@@ -42,37 +44,36 @@ class _RenderContentsState extends State<RenderContents> {
               child: CircularProgressIndicator(
               backgroundColor: PrimaryColor,
             ))
-          : FutureBuilder<List<StoresModel>>(
+          : FutureBuilder<List<CoursesModel>>(
               future: RemoteAuthService()
-                  .getOnlineStoresSearch(token: token!, query: widget.query),
+                  .getCoursesSearch(token: token!, query: widget.query),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 0,
-                        mainAxisSpacing: 0,
-                        childAspectRatio: 0.65, // Proporção padrão
-                      ),
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      // gridDelegate:
+                      //     const SliverGridDelegateWithFixedCrossAxisCount(
+                      //   crossAxisCount: 2,
+                      //   crossAxisSpacing: 0,
+                      //   mainAxisSpacing: 0,
+                      //   childAspectRatio: 0.65, // Proporção padrão
+                      // ),
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
-                        var render = snapshot.data![index];
+                        var renders = snapshot.data![index];
                         return GestureDetector(
-                          child: ContentProduct(
-                              urlLogo: render.logourl.toString(),
-                              maxl: 1,
-                              over: TextOverflow.fade,
-                              drules:
-                                  "${render.percentcashback.toString()}% de cashback",
-                              title: render.name.toString(),
-                              id: render.id.toString()),
+                          child: CourseContent(
+                            urlThumb: renders.urlbanner.toString(),
+                            subtitle: "${renders.desc}",
+                            title: renders.title.toString(),
+                            id: renders.id.toString(),
+                          ),
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => StoreScreen(
-                                  id: render.id.toString(),
+                                  id: renders.id.toString(),
                                 ),
                               ),
                             );

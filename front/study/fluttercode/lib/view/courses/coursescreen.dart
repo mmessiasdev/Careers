@@ -11,6 +11,7 @@ import 'package:Consult/model/courses.dart';
 import 'package:Consult/model/video.dart';
 import 'package:Consult/service/local/auth.dart';
 import 'package:Consult/service/remote/auth.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -92,8 +93,10 @@ class _CourseScreenState extends State<CourseScreen> {
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(25),
                                       child: SizedBox(
-                                          child: Image.network(
-                                              render["urlbanner"])),
+                                        child: Image.network(
+                                          render["urlbanner"],
+                                        ),
+                                      ),
                                     ),
                                   ),
                                   SecundaryText(
@@ -114,10 +117,11 @@ class _CourseScreenState extends State<CourseScreen> {
                                           onTap: () {
                                             RemoteAuthService()
                                                 .putFavoriteCourse(
-                                                    fullname: fullname,
-                                                    token: token,
-                                                    id: render["id"].toString(),
-                                                    profileId: id);
+                                              fullname: fullname,
+                                              token: token,
+                                              id: render["id"].toString(),
+                                              profileId: id,
+                                            );
                                           },
                                           child: const Icon(
                                             Icons.favorite,
@@ -191,6 +195,112 @@ class _CourseScreenState extends State<CourseScreen> {
                                   SizedBox(
                                     height: 25,
                                   ),
+                                  Padding(
+                                    padding: defaultPadding,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        SecundaryText(
+                                            text: "Vídeos do Curso",
+                                            color: nightColor,
+                                            align: TextAlign.start),
+                                        FutureBuilder<List<Videos>>(
+                                          future: RemoteAuthService()
+                                              .getOneCourseVideos(
+                                            token: token,
+                                            id: widget.id.toString(),
+                                          ),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.waiting) {
+                                              // Enquanto os dados estão sendo carregados
+                                              return SizedBox(
+                                                height: 300,
+                                                child: ErrorPost(
+                                                    text: 'Carregando...'),
+                                              );
+                                            }
+
+                                            if (snapshot.hasError) {
+                                              // Caso ocorra um erro na requisição
+                                              return SizedBox(
+                                                height: 300,
+                                                child: ErrorPost(
+                                                  text:
+                                                      'Erro ao carregar vídeos.\n\nVerifique sua conexão.',
+                                                ),
+                                              );
+                                            }
+
+                                            if (snapshot.hasData &&
+                                                snapshot.data != null) {
+                                              // Caso os dados sejam carregados com sucesso
+                                              final videos = snapshot.data!;
+                                              if (videos.isEmpty) {
+                                                return SizedBox(
+                                                  height: 300,
+                                                  child: ErrorPost(
+                                                    text:
+                                                        'Nenhum vídeo encontrado.',
+                                                  ),
+                                                );
+                                              }
+
+                                              return ListView.builder(
+                                                itemCount: videos.length,
+                                                shrinkWrap: true,
+                                                scrollDirection: Axis.vertical,
+                                                physics:
+                                                    const NeverScrollableScrollPhysics(),
+                                                itemBuilder: (context, index) {
+                                                  final video = videos[index];
+                                                  return VideoContent(
+                                                    urlThumb: widget.urlbanner,
+                                                    time: video.time.toString(),
+                                                    title:
+                                                        video.name.toString(),
+                                                    id: video.id.toString(),
+                                                  );
+                                                },
+                                              );
+                                            }
+                                            // Caso nenhum dado seja retornado
+                                            return SizedBox(
+                                              height: 300,
+                                              child: ErrorPost(
+                                                text:
+                                                    'Não encontrado. \n\nVerifique sua conexão, por gentileza.',
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 50,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            EasyLoading.showSuccess(
+                                                "Certificado enviado para seu currículo!");
+                                            RemoteAuthService()
+                                                .putAddCerfiticates(
+                                              fullname: fullname,
+                                              token: token,
+                                              id: render["id"].toString(),
+                                              profileId: id,
+                                            );
+                                          },
+                                          child: DefaultButton(
+                                            color: SeventhColor,
+                                            padding: defaultPadding,
+                                            text: "Pegar Cerfifticado",
+                                            icon: Icons.document_scanner,
+                                            colorText: lightColor,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -214,82 +324,6 @@ class _CourseScreenState extends State<CourseScreen> {
                           ),
                         );
                       }),
-                  Padding(
-                    padding: defaultPadding,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SecundaryText(
-                            text: "Vídeos do Curso",
-                            color: nightColor,
-                            align: TextAlign.start),
-                        FutureBuilder<List<Videos>>(
-                          future: RemoteAuthService().getOneCourseVideos(
-                            token: token,
-                            id: widget.id.toString(),
-                          ),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              // Enquanto os dados estão sendo carregados
-                              return SizedBox(
-                                height: 300,
-                                child: ErrorPost(text: 'Carregando...'),
-                              );
-                            }
-
-                            if (snapshot.hasError) {
-                              // Caso ocorra um erro na requisição
-                              return SizedBox(
-                                height: 300,
-                                child: ErrorPost(
-                                  text:
-                                      'Erro ao carregar vídeos.\n\nVerifique sua conexão.',
-                                ),
-                              );
-                            }
-
-                            if (snapshot.hasData && snapshot.data != null) {
-                              // Caso os dados sejam carregados com sucesso
-                              final videos = snapshot.data!;
-                              if (videos.isEmpty) {
-                                return SizedBox(
-                                  height: 300,
-                                  child: ErrorPost(
-                                    text: 'Nenhum vídeo encontrado.',
-                                  ),
-                                );
-                              }
-
-                              return ListView.builder(
-                                itemCount: videos.length,
-                                shrinkWrap: true,
-                                scrollDirection: Axis.vertical,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  final video = videos[index];
-                                  return VideoContent(
-                                    urlThumb: widget.urlbanner,
-                                    time: video.time.toString(),
-                                    title: video.name.toString(),
-                                    id: video.id.toString(),
-                                  );
-                                },
-                              );
-                            }
-                            // Caso nenhum dado seja retornado
-                            return SizedBox(
-                              height: 300,
-                              child: ErrorPost(
-                                text:
-                                    'Não encontrado. \n\nVerifique sua conexão, por gentileza.',
-                              ),
-                            );
-                          },
-                        )
-                      ],
-                    ),
-                  )
                 ],
               ),
       ),

@@ -113,6 +113,28 @@ class RemoteAuthService {
     return listItens;
   }
 
+  Future<List<CoursesModel>> getCoursesSearch({
+    required String token,
+    required String query,
+  }) async {
+    List<CoursesModel> listItens = [];
+    var response = await client.get(
+      Uri.parse(
+          "${url.toString()}/courses?private=false&title_contains=$query"),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+        'ngrok-skip-browser-warning': "true"
+      },
+    );
+    var body = jsonDecode(response.body);
+    var itemCount = body;
+    for (var i = 0; i < itemCount.length; i++) {
+      listItens.add(CoursesModel.fromJson(itemCount[i]));
+    }
+    return listItens;
+  }
+
   Future<Map> getOneCourse({
     required String id,
     required String? token,
@@ -137,6 +159,66 @@ class RemoteAuthService {
   }) async {
     var body = {
       "profilespinned": [profileId],
+    };
+    var response = await client.put(
+      Uri.parse('${url.toString()}/courses/$id'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+        'ngrok-skip-browser-warning': "true"
+      },
+      body: jsonEncode(body),
+    );
+    return response;
+  }
+
+  Future<List<CoursesModel>> getFavoriteCourses(
+      {required String? token, required String profileId}) async {
+    List<CoursesModel> listItens = [];
+    var response = await client.get(
+      Uri.parse('${url.toString()}/courses?profilespinned.id_eq=$profileId'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+        'ngrok-skip-browser-warning': "true"
+      },
+    );
+    var body = jsonDecode(response.body);
+    var itemCount = body;
+    for (var i = 0; i < itemCount.length; i++) {
+      listItens.add(CoursesModel.fromJson(itemCount[i]));
+    }
+    return listItens;
+  }
+
+  Future<List<CoursesModel>> getCerfiticatesCourses(
+      {required String? token, required String profileId}) async {
+    List<CoursesModel> listItens = [];
+    var response = await client.get(
+      Uri.parse(
+          '${url.toString()}/courses?profilescerfiticates.id_eq=$profileId'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+        'ngrok-skip-browser-warning': "true"
+      },
+    );
+    var body = jsonDecode(response.body);
+    var itemCount = body;
+    for (var i = 0; i < itemCount.length; i++) {
+      listItens.add(CoursesModel.fromJson(itemCount[i]));
+    }
+    return listItens;
+  }
+
+  Future<dynamic> putAddCerfiticates({
+    required String fullname,
+    required String token,
+    required String id,
+    required String profileId,
+  }) async {
+    var body = {
+      "profilescerfiticates": [profileId],
     };
     var response = await client.put(
       Uri.parse('${url.toString()}/courses/$id'),
@@ -280,27 +362,6 @@ class RemoteAuthService {
     );
     var itens = json.decode(response.body);
     return itens;
-  }
-
-  Future<List<StoresModel>> getOnlineStoresSearch({
-    required String token,
-    required String query,
-  }) async {
-    List<StoresModel> listItens = [];
-    var response = await client.get(
-      Uri.parse("${url.toString()}/online-stores?name_contains=$query"),
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $token",
-        'ngrok-skip-browser-warning': "true"
-      },
-    );
-    var body = jsonDecode(response.body);
-    var itemCount = body;
-    for (var i = 0; i < itemCount.length; i++) {
-      listItens.add(StoresModel.fromJson(itemCount[i]));
-    }
-    return listItens;
   }
 
   //${url.toString()}/posts?title_contains=$query&chunk.id_eq=$chunkId

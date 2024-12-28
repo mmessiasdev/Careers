@@ -238,37 +238,37 @@ class VideoContent extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          whatch == false
-                              ? Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    SubText(
-                                      text: "Vídeo não assistido",
-                                      align: TextAlign.end,
-                                      color: FifthColor,
-                                    ),
-                                    const SizedBox(width: 5),
-                                    Icon(
-                                      Icons.cancel,
-                                      color: FifthColor,
-                                    ),
-                                  ],
-                                )
-                              : Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    SubText(
-                                      text: "Vídeo assistido",
-                                      align: TextAlign.end,
-                                      color: FifthColor,
-                                    ),
-                                    const SizedBox(width: 5),
-                                    Icon(
-                                      Icons.check,
-                                      color: SeventhColor,
-                                    ),
-                                  ],
-                                ),
+                          // whatch == false
+                          //     ? Row(
+                          //         mainAxisAlignment: MainAxisAlignment.end,
+                          //         children: [
+                          //           SubText(
+                          //             text: "Vídeo não assistido",
+                          //             align: TextAlign.end,
+                          //             color: FifthColor,
+                          //           ),
+                          //           const SizedBox(width: 5),
+                          //           Icon(
+                          //             Icons.cancel,
+                          //             color: FifthColor,
+                          //           ),
+                          //         ],
+                          //       )
+                          //     : Row(
+                          //         mainAxisAlignment: MainAxisAlignment.end,
+                          //         children: [
+                          //           SubText(
+                          //             text: "Vídeo assistido",
+                          //             align: TextAlign.end,
+                          //             color: FifthColor,
+                          //           ),
+                          //           const SizedBox(width: 5),
+                          //           Icon(
+                          //             Icons.check,
+                          //             color: SeventhColor,
+                          //           ),
+                          //         ],
+                          //       ),
                         ],
                       ),
                       SecundaryText(

@@ -12,7 +12,8 @@ import 'package:Consult/model/courses.dart';
 import 'package:Consult/service/remote/auth.dart';
 import 'package:Consult/view/account/account.dart';
 import 'package:Consult/view/courses/addcourse.dart';
-import 'package:Consult/view/courses/ourcourses.dart';
+import 'package:Consult/view/courses/certificatescourses.dart';
+import 'package:Consult/view/courses/favoritecourses.dart';
 import 'package:Consult/view/indicators/indicatorsreen.dart';
 import 'package:Consult/view/profiles/employeescreen.dart';
 import 'package:flutter/material.dart';
@@ -171,7 +172,7 @@ class _HomePageState extends State<HomePage> {
                     Padding(
                       padding: defaultPadding,
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           GestureDetector(
                             child: IconList(
@@ -184,37 +185,17 @@ class _HomePageState extends State<HomePage> {
                                   );
                                 },
                                 icon: Icons.favorite,
-                                title: "Minhas Playlsits"),
+                                title: "Favoritos"),
                           ),
-                          IconList(
-                              onClick: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => EmployeeScreen(),
-                                  ),
-                                );
-                              },
-                              icon: Icons.flash_on,
-                              title: "Promoções Relâmpagos"),
-                          IconList(
-                            onClick: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => IndicatorsScreen(),
-                                ),
-                              );
-                            },
-                            icon: Icons.movie,
-                            title: "Meus Cursos",
+                          SizedBox(
+                            width: 15,
                           ),
                           IconList(
                             onClick: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => IndicatorsScreen(),
+                                  builder: (context) => CerfiticatesCourses(),
                                 ),
                               );
                             },

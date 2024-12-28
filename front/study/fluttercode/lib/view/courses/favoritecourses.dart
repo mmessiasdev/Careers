@@ -19,7 +19,7 @@ class OurCourses extends StatefulWidget {
 
 class _OurCoursesState extends State<OurCourses> {
   var token;
-  var idInterprise;
+  var profileId;
 
   @override
   void initState() {
@@ -29,12 +29,11 @@ class _OurCoursesState extends State<OurCourses> {
 
   void getString() async {
     var strToken = await LocalAuthService().getSecureToken("token");
-    var strIdInterprise =
-        await LocalAuthService().getIdInterprise("idInterprise");
+    var strProfileId = await LocalAuthService().getId("id");
 
     setState(() {
       token = strToken.toString();
-      idInterprise = strIdInterprise.toString();
+      profileId = strProfileId.toString();
     });
   }
 
@@ -48,7 +47,7 @@ class _OurCoursesState extends State<OurCourses> {
             Padding(
               padding: defaultPaddingHorizon,
               child: MainHeader(
-                  title: "Nossos Planos!",
+                  title: "Favoritos",
                   maxl: 1,
                   icon: Icons.arrow_back_ios,
                   onClick: () {
@@ -60,8 +59,8 @@ class _OurCoursesState extends State<OurCourses> {
             ),
             Center(
               child: FutureBuilder<List<CoursesModel>>(
-                  future: RemoteAuthService().getCourses(
-                      token: token, interpriseId: idInterprise.toString()),
+                  future: RemoteAuthService().getFavoriteCourses(
+                      token: token, profileId: profileId.toString()),
                   builder: (context, planSnapshot) {
                     if (planSnapshot.hasData) {
                       return ListView.builder(
@@ -76,7 +75,7 @@ class _OurCoursesState extends State<OurCourses> {
                                 child: CourseContent(
                                   urlThumb: renders.urlbanner.toString(),
                                   subtitle: "${renders.desc}",
-                                  title: renders.time.toString(),
+                                  title: renders.title.toString(),
                                   id: renders.id.toString(),
                                 ),
                               );
