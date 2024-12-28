@@ -56,7 +56,7 @@ class _RenderContentsState extends State<RenderContents> {
                       //   crossAxisCount: 2,
                       //   crossAxisSpacing: 0,
                       //   mainAxisSpacing: 0,
-                      //   childAspectRatio: 0.65, // Proporção padrão
+                      //   childAspectRatio: 0.65,
                       // ),
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
