@@ -11,6 +11,7 @@ import 'package:Consult/model/courses.dart';
 import 'package:Consult/model/video.dart';
 import 'package:Consult/service/local/auth.dart';
 import 'package:Consult/service/remote/auth.dart';
+import 'package:Consult/view/courses/examsscreen.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
@@ -280,15 +281,25 @@ class _CourseScreenState extends State<CourseScreen> {
                                         ),
                                         GestureDetector(
                                           onTap: () {
-                                            EasyLoading.showSuccess(
-                                                "Certificado enviado para seu currículo!");
-                                            RemoteAuthService()
-                                                .putAddCerfiticates(
-                                              fullname: fullname,
-                                              token: token,
-                                              id: render["id"].toString(),
-                                              profileId: id,
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ExamsScreen(
+                                                  idCourse: render["id"],
+                                                  nameCourse: render["title"],
+                                                ),
+                                              ),
                                             );
+                                            // EasyLoading.showSuccess(
+                                            //     "Certificado enviado para seu currículo!");
+                                            // RemoteAuthService()
+                                            //     .putAddCerfiticates(
+                                            //   fullname: fullname,
+                                            //   token: token,
+                                            //   id: render["id"].toString(),
+                                            //   profileId: id,
+                                            // );
                                           },
                                           child: DefaultButton(
                                             color: SeventhColor,

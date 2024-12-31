@@ -47,7 +47,7 @@ class _CerfiticatesCoursesState extends State<CerfiticatesCourses> {
             Padding(
               padding: defaultPaddingHorizon,
               child: MainHeader(
-                  title: "Favoritos",
+                  title: "Certificados",
                   maxl: 1,
                   icon: Icons.arrow_back_ios,
                   onClick: () {

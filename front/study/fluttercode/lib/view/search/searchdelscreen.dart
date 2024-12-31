@@ -90,7 +90,7 @@ class _RenderContentsState extends State<RenderContents> {
                       ));
                 }
                 return Expanded(
-                  child: Center(
+                  child: Center(  
                     child: CircularProgressIndicator(
                       color: PrimaryColor,
                     ),
