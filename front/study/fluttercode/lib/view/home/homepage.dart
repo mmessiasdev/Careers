@@ -14,6 +14,7 @@ import 'package:Consult/view/account/account.dart';
 import 'package:Consult/view/courses/addcourse.dart';
 import 'package:Consult/view/courses/certificatescourses.dart';
 import 'package:Consult/view/courses/favoritecourses.dart';
+import 'package:Consult/view/curriculum/curriculumscreen.dart';
 import 'package:Consult/view/indicators/indicatorsreen.dart';
 import 'package:Consult/view/profiles/employeescreen.dart';
 import 'package:flutter/material.dart';
@@ -161,9 +162,8 @@ class _HomePageState extends State<HomePage> {
                   padding: defaultPaddingHorizon,
                   child: MainHeader(
                     title: "NIDE",
-                    icon: Icons.menu,
                     maxl: 2,
-                    onClick: () => _showDraggableScrollableSheet(context),
+                    // onClick: () => _showDraggableScrollableSheet(context),
                   ),
                 ),
                 Column(
@@ -172,14 +172,14 @@ class _HomePageState extends State<HomePage> {
                     Padding(
                       padding: defaultPadding,
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           LargeIconList(
                             onClick: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => OurCourses(),
+                                  builder: (context) => CurriculumScreen(),
                                 ),
                               );
                             },

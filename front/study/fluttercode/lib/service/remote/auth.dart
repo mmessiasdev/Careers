@@ -92,6 +92,21 @@ class RemoteAuthService {
     );
   }
 
+  Future<Map> getProfileDetails({
+    required String? token,
+  }) async {
+    var response = await client.get(
+      Uri.parse('${url.toString()}/profiles/me'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+        'ngrok-skip-browser-warning': "true"
+      },
+    );
+    var itens = json.decode(response.body);
+    return itens;
+  }
+
   Future<List<CoursesModel>> getCourses({
     required String? token,
     required String interpriseId,

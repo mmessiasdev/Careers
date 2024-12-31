@@ -49,9 +49,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     children: [
                       HomePage(),
                       SearchScreen(),
-                      AccountScreen(
-                        buttom: false,
-                      ),
                     ],
                   ),
                 ),
@@ -80,11 +77,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       BottomNavigationBarItem(
                           icon: Icon(
                         Icons.search,
-                        size: 30,
-                      )),
-                      BottomNavigationBarItem(
-                          icon: Icon(
-                        Icons.people,
                         size: 30,
                       )),
                     ],
