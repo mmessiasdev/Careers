@@ -172,8 +172,23 @@ class _HomePageState extends State<HomePage> {
                     Padding(
                       padding: defaultPadding,
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          LargeIconList(
+                            onClick: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => OurCourses(),
+                                ),
+                              );
+                            },
+                            icon: Icons.book,
+                            title: "Currículo",
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
                           GestureDetector(
                             child: IconList(
                                 onClick: () {

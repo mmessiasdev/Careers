@@ -15,7 +15,7 @@ import 'package:get/get_core/src/get_main.dart';
 class ExamsScreen extends StatefulWidget {
   ExamsScreen({super.key, required this.nameCourse, required this.idCourse});
   String nameCourse;
-  String idCourse;
+  int idCourse;
 
   @override
   State<ExamsScreen> createState() => _ExamsScreenState();
@@ -103,7 +103,7 @@ class _ExamsScreenState extends State<ExamsScreen> {
         RemoteAuthService().putAddCerfiticates(
           fullname: fullname,
           token: token,
-          id: widget.idCourse,
+          id: widget.idCourse.toString(),
           profileId: id,
         );
         // Redireciona para um `SizedBox`
@@ -117,23 +117,12 @@ class _ExamsScreenState extends State<ExamsScreen> {
         );
       } else {
         // Exibe mensagem de erro
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text("Resultado"),
-              content:
-                  const Text("Você não atingiu a pontuação mínima de 70%."),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text("Tentar novamente"),
-                ),
-              ],
-            );
-          },
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                FailedExamResult(resultNumber: "${percentage.toString()}%"),
+          ),
         );
         setState(() {
           currentQuestionIndex = 0;
