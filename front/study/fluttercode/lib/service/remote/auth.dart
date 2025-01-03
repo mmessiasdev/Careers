@@ -107,6 +107,26 @@ class RemoteAuthService {
     return itens;
   }
 
+  Future<dynamic> putProfileCurriculumDesc({
+    required String token,
+    required String id,
+    required String curriculumdesc,
+  }) async {
+    var body = {
+      "curriculumdesc": curriculumdesc,
+    };
+    var response = await client.put(
+      Uri.parse('${url.toString()}/profiles/$id'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+        'ngrok-skip-browser-warning': "true"
+      },
+      body: jsonEncode(body),
+    );
+    return response;
+  }
+
   Future<List<CoursesModel>> getCourses({
     required String? token,
     required String interpriseId,
