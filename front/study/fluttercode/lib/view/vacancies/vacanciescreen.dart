@@ -1,24 +1,25 @@
+import 'package:Consult/component/buttons.dart';
 import 'package:Consult/component/colors.dart';
 import 'package:Consult/component/padding.dart';
 import 'package:Consult/component/texts.dart';
 import 'package:Consult/component/widgets/header.dart';
 import 'package:Consult/service/local/auth.dart';
 import 'package:Consult/service/remote/auth.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class VacancieScreen extends StatefulWidget {
-  VacancieScreen({super.key, required this.id, required this.urlbanner});
+  VacancieScreen({super.key, required this.id});
   final String id;
-  final String urlbanner;
 
   @override
   State<VacancieScreen> createState() => _VacancieScreenState();
 }
 
 class _VacancieScreenState extends State<VacancieScreen> {
+  var id;
   var token;
-  YoutubePlayerController? _youtubeController;
+  var idInterprise;
 
   @override
   void initState() {
@@ -27,29 +28,18 @@ class _VacancieScreenState extends State<VacancieScreen> {
   }
 
   void getString() async {
+    var strId = await LocalAuthService().getId("id");
     var strToken = await LocalAuthService().getSecureToken("token");
-    setState(() {
-      token = strToken.toString();
-    });
-  }
+    var strIdInterprise =
+        await LocalAuthService().getIdInterprise("idInterprise");
 
-  void initializeYoutubePlayer(String videoUrl) {
-    final videoId = YoutubePlayer.convertUrlToId(videoUrl);
-    if (videoId != null) {
-      _youtubeController = YoutubePlayerController(
-        initialVideoId: videoId,
-        flags: const YoutubePlayerFlags(
-          autoPlay: false,
-          mute: false,
-        ),
-      );
+    if (mounted) {
+      setState(() {
+        id = strId.toString();
+        idInterprise = strIdInterprise.toString();
+        token = strToken.toString();
+      });
     }
-  }
-
-  @override
-  void dispose() {
-    _youtubeController?.dispose();
-    super.dispose();
   }
 
   @override
@@ -61,7 +51,7 @@ class _VacancieScreenState extends State<VacancieScreen> {
             ? const SizedBox()
             : FutureBuilder<Map>(
                 future: RemoteAuthService()
-                    .getOneVideo(token: token, id: widget.id),
+                    .getOnevacancie(token: token, id: widget.id),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
@@ -81,65 +71,87 @@ class _VacancieScreenState extends State<VacancieScreen> {
 
                   if (snapshot.hasData) {
                     var render = snapshot.data!;
-                    initializeYoutubePlayer(render["url"]);
-
                     return Padding(
                       padding: defaultPaddingHorizon,
                       child: ListView(
                         children: [
                           MainHeader(
                             maxl: 4,
-                            title: "NIDE",
+                            title: "",
                             icon: Icons.arrow_back_ios,
                             onClick: () {
                               Navigator.pop(context);
                             },
                           ),
-                          if (_youtubeController != null)
-                            Padding(
-                              padding: defaultPaddingVertical,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(25),
-                                child: YoutubePlayer(
-                                  controller: _youtubeController!,
-                                  showVideoProgressIndicator: true,
-                                  progressIndicatorColor: PrimaryColor,
-                                ),
-                              ),
-                            ),
+                          Image.network(
+                            width: 100,
+                            height: 100,
+                            render["enterprise"]["urllogo"],
+                          ),
+                          const SizedBox(height: 35),
                           SecundaryText(
-                            text: render["name"],
+                            text: render["title"],
                             color: nightColor,
                             align: TextAlign.center,
                           ),
                           const SizedBox(height: 35),
-                          Row(
+                          Expanded(
+                              child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SubText(
-                                      color: nightColor,
-                                      text:
-                                          "Tempo do vídeo: ${render["time"].toString()} horas",
-                                      align: TextAlign.start,
-                                    ),
-                                    const SizedBox(height: 10),
-                                    SubText(
-                                      color: nightColor,
-                                      text: "Descrição: ${render["desc"]}",
-                                      align: TextAlign.start,
-                                    ),
-                                  ],
-                                ),
+                              SubText(
+                                color: nightColor,
+                                text: render["desc"],
+                                align: TextAlign.start,
+                              ),
+                              const SizedBox(height: 25),
+                              SubText(
+                                color: nightColor,
+                                text: render["local"],
+                                align: TextAlign.start,
+                              ),
+                              const SizedBox(height: 5),
+                              SubText(
+                                color: nightColor,
+                                text: "Vagas: ${render["vacanciesnumber"]}",
+                                align: TextAlign.start,
+                              ),
+                              const SizedBox(height: 5),
+                              SubText(
+                                color: nightColor,
+                                text: "Salário: ${render["value"]}R\$",
+                                align: TextAlign.start,
                               ),
                             ],
-                          ),
-                          const SizedBox(height: 25),
+                          )),
+                          const SizedBox(height: 50),
                           const Divider(),
-                          const SizedBox(height: 25),
+                          const SizedBox(height: 50),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 10),
+                                GestureDetector(
+                                  onTap: () {
+                                    EasyLoading.showSuccess(
+                                        "Você se canditadou a vaga de ${render["title"]}");
+                                    RemoteAuthService().putCadidateVacancie(
+                                        profileId: id,
+                                        token: token,
+                                        id: widget.id);
+                                  },
+                                  child: DefaultButton(
+                                    text: "Candidatar-se",
+                                    padding: defaultPadding,
+                                    color: SeventhColor,
+                                    colorText: lightColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     );

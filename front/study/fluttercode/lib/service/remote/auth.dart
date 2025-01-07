@@ -437,4 +437,40 @@ class RemoteAuthService {
     }
     return listItens;
   }
+
+  Future<Map> getOnevacancie({
+    required String id,
+    required String? token,
+  }) async {
+    var response = await client.get(
+      Uri.parse('${url.toString()}/vacancies/$id'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+        'ngrok-skip-browser-warning': "true"
+      },
+    );
+    var itens = json.decode(response.body);
+    return itens;
+  }
+
+  Future<dynamic> putCadidateVacancie({
+    required String token,
+    required String id,
+    required String profileId,
+  }) async {
+    var body = {
+      "candidate": [profileId],
+    };
+    var response = await client.put(
+      Uri.parse('${url.toString()}/vacancies/$id'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+        'ngrok-skip-browser-warning': "true"
+      },
+      body: jsonEncode(body),
+    );
+    return response;
+  }
 }

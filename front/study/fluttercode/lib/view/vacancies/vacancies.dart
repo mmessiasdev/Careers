@@ -11,6 +11,7 @@ import 'package:Consult/service/local/auth.dart';
 import 'package:Consult/service/remote/auth.dart';
 import 'package:Consult/view/courses/examsscreen.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class VacanciesScreen extends StatefulWidget {
   const VacanciesScreen({super.key});
@@ -37,6 +38,14 @@ class _VacanciesScreenState extends State<VacanciesScreen> {
       token = strToken.toString();
       profileId = strProfileId.toString();
     });
+  }
+
+  // Função para formatar a data no padrão brasileiro
+  String _formatDate(String updatedAt) {
+    // Converte a string para DateTime
+    DateTime date = DateTime.parse(updatedAt);
+    // Formata a data no padrão brasileiro (dd/MM/yyyy)
+    return DateFormat('dd/MM/yyyy').format(date);
   }
 
   @override
@@ -70,7 +79,9 @@ class _VacanciesScreenState extends State<VacanciesScreen> {
                               return Padding(
                                 padding: defaultPaddingHorizon,
                                 child: VacancieCont(
-                                  subtitle: "${renders.desc}",
+                                  urlLogo: renders.urlLogo,
+                                  subtitle: _formatDate(renders.updatedAt
+                                      .toString()), // Formatar a data aqui
                                   title: renders.title.toString(),
                                   id: renders.id.toString(),
                                 ),

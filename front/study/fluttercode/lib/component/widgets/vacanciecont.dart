@@ -15,6 +15,7 @@ class VacancieCont extends StatelessWidget {
       this.over,
       this.bgcolor,
       this.price,
+      this.urlLogo,
       required this.id});
 
   final String? subtitle;
@@ -26,6 +27,7 @@ class VacancieCont extends StatelessWidget {
   String? price;
   TextOverflow? over;
   Color? bgcolor;
+  String? urlLogo;
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +38,10 @@ class VacancieCont extends StatelessWidget {
           (Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => VacancieScreen(
-                      id: id,
-                      urlbanner: urlThumb ?? "",
-                    )),
+              builder: (context) => VacancieScreen(
+                id: id,
+              ),
+            ),
           ));
         },
         child: Container(
@@ -58,24 +60,9 @@ class VacancieCont extends StatelessWidget {
           ),
           child: Row(
             children: [
-              SizedBox(
-                height: 100,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: urlThumb == ""
-                        ? SizedBox()
-                        : Image.network(
-                            urlThumb ?? "",
-                            fit: BoxFit.cover,
-                          ),
-                  ),
-                ),
-              ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -91,31 +78,11 @@ class VacancieCont extends StatelessWidget {
                       ),
                       SubText(
                         text: subtitle ?? "",
-                        color: nightColor,
-                        align: TextAlign.start,
-                        maxl: 8,
-                        over: TextOverflow.fade,
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      SubText(
-                        text: time ?? "",
                         color: OffColor,
                         align: TextAlign.start,
-                        maxl: 2,
-                        over: over,
                       ),
                       SizedBox(
-                        height: 35,
-                      ),
-                      SubTextSized(
-                          text: price ?? "Grátis",
-                          size: 26,
-                          align: TextAlign.end,
-                          fontweight: FontWeight.w600),
-                      SizedBox(
-                        height: 15,
+                        height: 45,
                       ),
                       Container(
                         decoration: BoxDecoration(
@@ -124,13 +91,28 @@ class VacancieCont extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: SubText(
-                            text: "Acessar",
+                            text: "Verficar",
                             align: TextAlign.center,
                             color: lightColor,
                           ),
                         ),
                       )
                     ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 50,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: urlLogo == ""
+                        ? SizedBox()
+                        : Image.network(
+                            urlLogo ?? "",
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ),
               ),
