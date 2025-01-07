@@ -8,7 +8,6 @@ import 'package:Consult/component/widgets/header.dart';
 import 'package:Consult/model/courses.dart';
 import 'package:Consult/service/local/auth.dart';
 import 'package:Consult/service/remote/auth.dart';
-import 'package:Consult/view/account/auth/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -67,9 +66,10 @@ class _CurriculumScreenState extends State<CurriculumScreen> {
                         height: 35,
                       ),
                       SubText(
-                          text: "Mudar descrição pessoal",
-                          align: TextAlign.start),
-                      SizedBox(
+                        text: "Mudar descrição pessoal",
+                        align: TextAlign.start,
+                      ),
+                      const SizedBox(
                         height: 5,
                       ),
                       Container(
@@ -89,9 +89,9 @@ class _CurriculumScreenState extends State<CurriculumScreen> {
                         onTap: () {
                           Navigator.pop(context);
                           setState(() {
-                            CurriculumScreen();
+                            const CurriculumScreen();
                           });
-                          EasyLoading.showSuccess("Currículo Atualizado ");
+                          EasyLoading.showSuccess("Currículo Atualizado. Feche a página e abra novamente.");
                           RemoteAuthService().putProfileCurriculumDesc(
                               token: token,
                               id: profileId,
@@ -164,88 +164,89 @@ class _CurriculumScreenState extends State<CurriculumScreen> {
                                     text: fullname,
                                     color: nightColor,
                                     align: TextAlign.end),
-                                SizedBox(
+                                const SizedBox(
                                   height: 5,
                                 ),
                                 SubText(text: email, align: TextAlign.end),
-                                SizedBox(
+                                const SizedBox(
                                   height: 45,
                                 ),
                                 FutureBuilder<Map>(
-                                    future: RemoteAuthService()
-                                        .getProfileDetails(token: token),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        var render = snapshot.data!;
-                                        return Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            SubText(
-                                                text:
-                                                    "Data de nasimento: ${render['birth']}",
-                                                align: TextAlign.start),
-                                            const SizedBox(
-                                              height: 15,
-                                            ),
-                                            SecundaryText(
-                                                color: nightColor,
-                                                text: render['curriculumdesc'],
-                                                align: TextAlign.justify),
-                                            GestureDetector(
-                                              onTap: () {
-                                                _showDraggableScrollableSheet(
-                                                    context);
-                                              },
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: [
-                                                  SubText(
-                                                      text: "Editar",
-                                                      align: TextAlign.end),
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Container(
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      color: PrimaryColor,
-                                                    ),
-                                                    child: const Padding(
-                                                      padding:
-                                                          EdgeInsets.all(8.0),
-                                                      child: SizedBox(
-                                                        child: Icon(Icons.edit),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      } else if (snapshot.hasError) {
-                                        return Expanded(
-                                          child: Center(
-                                              child: SubText(
-                                            text: 'Erro ao pesquisar Currículo',
-                                            color: PrimaryColor,
-                                            align: TextAlign.center,
-                                          )),
-                                        );
-                                      }
-                                      return SizedBox(
-                                        height: 200,
-                                        child: Center(
-                                          child: CircularProgressIndicator(
-                                            color: PrimaryColor,
+                                  future: RemoteAuthService()
+                                      .getProfileDetails(token: token),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      var render = snapshot.data!;
+                                      return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SubText(
+                                              text:
+                                                  "Data de nasimento: ${render['birth']}",
+                                              align: TextAlign.start),
+                                          const SizedBox(
+                                            height: 15,
                                           ),
-                                        ),
+                                          SecundaryText(
+                                              color: nightColor,
+                                              text: render['curriculumdesc'],
+                                              align: TextAlign.justify),
+                                          GestureDetector(
+                                            onTap: () {
+                                              _showDraggableScrollableSheet(
+                                                  context);
+                                            },
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                SubText(
+                                                    text: "Editar",
+                                                    align: TextAlign.end),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    color: PrimaryColor,
+                                                  ),
+                                                  child: const Padding(
+                                                    padding:
+                                                        EdgeInsets.all(8.0),
+                                                    child: SizedBox(
+                                                      child: Icon(Icons.edit),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
                                       );
-                                    }),
+                                    } else if (snapshot.hasError) {
+                                      return Expanded(
+                                        child: Center(
+                                            child: SubText(
+                                          text: 'Erro ao pesquisar Currículo',
+                                          color: PrimaryColor,
+                                          align: TextAlign.center,
+                                        )),
+                                      );
+                                    }
+                                    return SizedBox(
+                                      height: 200,
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          color: PrimaryColor,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
                               ],
                             ),
                             SizedBox(

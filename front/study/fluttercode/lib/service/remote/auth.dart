@@ -9,6 +9,7 @@ import 'package:Consult/model/localstores.dart';
 import 'package:Consult/model/postsnauth.dart';
 import 'package:Consult/model/profiles.dart';
 import 'package:Consult/model/stores.dart';
+import 'package:Consult/model/vacancies.dart';
 import 'package:Consult/model/verfiquedexitbalances.dart';
 import 'package:Consult/model/video.dart';
 import 'package:flutter/material.dart';
@@ -285,7 +286,6 @@ class RemoteAuthService {
     for (var i = 0; i < itemCount.length; i++) {
       listItens.add(Videos.fromJson(itemCount[i]));
     }
-    print(itemCount);
     return listItens;
   }
 
@@ -322,7 +322,6 @@ class RemoteAuthService {
     for (var i = 0; i < itemCount.length; i++) {
       listItens.add(ProfilesModel.fromJson(itemCount[i]));
     }
-    print(body);
     return listItens;
   }
 
@@ -415,6 +414,26 @@ class RemoteAuthService {
     var itemCount = body;
     for (var i = 0; i < itemCount.length; i++) {
       listItens.add(ProfilesModel.fromJson(itemCount[i]));
+    }
+    return listItens;
+  }
+
+  Future<List<Vacancies>> getVacancies({
+    required String? token,
+  }) async {
+    List<Vacancies> listItens = [];
+    var response = await client.get(
+      Uri.parse('${url.toString()}/vacancies'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+        "ngrok-skip-browser-warning": "true"
+      },
+    );
+    var body = jsonDecode(response.body);
+    var itemCount = body;
+    for (var i = 0; i < itemCount.length; i++) {
+      listItens.add(Vacancies.fromJson(itemCount[i]));
     }
     return listItens;
   }

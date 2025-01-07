@@ -3,6 +3,7 @@ import 'package:Consult/view/account/account.dart';
 import 'package:Consult/view/account/auth/signin.dart';
 import 'package:Consult/view/search/searchdelscreen.dart';
 import 'package:Consult/view/search/searchscreen.dart';
+import 'package:Consult/view/vacancies/vacancies.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 import 'package:Consult/view/home/homepage.dart';
@@ -46,9 +47,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 body: SafeArea(
                   child: IndexedStack(
                     index: controller.tabIndex,
-                    children: [
+                    children: const [
                       HomePage(),
-                      SearchScreen(),
+                      VacanciesScreen(),
                     ],
                   ),
                 ),
