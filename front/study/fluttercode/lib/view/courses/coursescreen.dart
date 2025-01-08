@@ -155,22 +155,6 @@ class _CourseScreenState extends State<CourseScreen> {
                                   SizedBox(
                                     height: 25,
                                   ),
-                                  // Divider(),
-                                  // SizedBox(
-                                  //   height: 25,
-                                  // ),
-                                  // Padding(
-                                  //   padding: defaultPaddingVertical,
-                                  //   child: GestureDetector(
-                                  //     onTap: () {},
-                                  //     child: DefaultButton(
-                                  //       text: "Comprar",
-                                  //       color: SeventhColor,
-                                  //       padding: defaultPadding,
-                                  //       colorText: lightColor,
-                                  //     ),
-                                  //   ),
-                                  // ),
                                   SizedBox(
                                     height: 10,
                                   ),
@@ -291,15 +275,6 @@ class _CourseScreenState extends State<CourseScreen> {
                                                 ),
                                               ),
                                             );
-                                            // EasyLoading.showSuccess(
-                                            //     "Certificado enviado para seu currículo!");
-                                            // RemoteAuthService()
-                                            //     .putAddCerfiticates(
-                                            //   fullname: fullname,
-                                            //   token: token,
-                                            //   id: render["id"].toString(),
-                                            //   profileId: id,
-                                            // );
                                           },
                                           child: DefaultButton(
                                             color: SeventhColor,

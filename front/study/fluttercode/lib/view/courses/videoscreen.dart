@@ -81,8 +81,7 @@ class _VideoScreenState extends State<VideoScreen> {
 
                   if (snapshot.hasData) {
                     var render = snapshot.data!;
-                    initializeYoutubePlayer(
-                        render["url"]);
+                    initializeYoutubePlayer(render["url"]);
 
                     return Padding(
                       padding: defaultPaddingHorizon,

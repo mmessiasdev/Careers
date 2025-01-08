@@ -83,10 +83,31 @@ class _VacancieScreenState extends State<VacancieScreen> {
                               Navigator.pop(context);
                             },
                           ),
-                          Image.network(
-                            width: 100,
-                            height: 100,
-                            render["enterprise"]["urllogo"],
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: SizedBox(
+                                  height: 100,
+                                  child: Image.network(
+                                    render["enterprise"]["urlbanner"],
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              SizedBox(
+                                child: Image.network(
+                                  width: 100,
+                                  height: 100,
+                                  render["enterprise"]["urllogo"],
+                                ),
+                              )
+                            ],
                           ),
                           const SizedBox(height: 35),
                           SecundaryText(
@@ -102,13 +123,13 @@ class _VacancieScreenState extends State<VacancieScreen> {
                             children: [
                               SubText(
                                 color: nightColor,
-                                text: render["desc"],
+                                text: "Descrição: \n\n${render["desc"]}",
                                 align: TextAlign.start,
                               ),
                               const SizedBox(height: 25),
                               SubText(
                                 color: nightColor,
-                                text: render["local"],
+                                text: "Cidade: ${render["local"]}",
                                 align: TextAlign.start,
                               ),
                               const SizedBox(height: 5),
