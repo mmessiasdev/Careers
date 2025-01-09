@@ -1,224 +1,228 @@
-import 'package:Consult/component/colors.dart';
+import 'dart:convert';
+import 'package:Consult/component/buttons.dart';
 import 'package:Consult/component/defaultButton.dart';
-import 'package:Consult/component/padding.dart';
-import 'package:Consult/component/texts.dart';
-import 'package:Consult/component/widgets/header.dart';
-import 'package:Consult/controller/auth.dart';
 import 'package:Consult/service/local/auth.dart';
-import 'package:Consult/service/remote/auth.dart';
 import 'package:Consult/view/courses/resultexam.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+import 'package:Consult/component/colors.dart';
+import 'package:Consult/component/padding.dart';
+import 'package:Consult/component/texts.dart';
+import 'package:Consult/component/widgets/header.dart';
+import 'package:Consult/service/remote/auth.dart';
 
 class ExamsScreen extends StatefulWidget {
-  ExamsScreen({super.key, required this.nameCourse, required this.idCourse});
-  String nameCourse;
-  int idCourse;
+  ExamsScreen({super.key, required this.nameCourse, required this.idProof});
+  final String nameCourse;
+  final int idProof;
 
   @override
   State<ExamsScreen> createState() => _ExamsScreenState();
 }
 
 class _ExamsScreenState extends State<ExamsScreen> {
-  var email;
+  late Future<Map> proofData;
+  var token; // Token será carregado do storage ou recebido de outro local.
   var fullname;
-  var cpf;
   var id;
-  var token;
-  var idInterprise;
 
   @override
   void initState() {
     super.initState();
-    getString();
+    proofData = fetchProofData();
   }
 
-  void getString() async {
-    var strEmail = await LocalAuthService().getEmail("email");
-    var strFullname = await LocalAuthService().getFullName("fullname");
-    var strId = await LocalAuthService().getId("id");
-    var strToken = await LocalAuthService().getSecureToken("token");
-    var strIdInterprise =
-        await LocalAuthService().getIdInterprise("idInterprise");
-
-    if (mounted) {
-      setState(() {
-        email = strEmail.toString();
-        fullname = strFullname.toString();
-        id = strId.toString();
-        idInterprise = strIdInterprise.toString();
-
-        token = strToken.toString();
-      });
-    }
+  Future<Map> fetchProofData() async {
+    token = await LocalAuthService().getSecureToken("token");
+    fullname = await LocalAuthService().getFullName("fullname");
+    id = await LocalAuthService().getId("id");
+    return RemoteAuthService().getOneProof(
+      id: widget.idProof.toString(),
+      token: token,
+    );
   }
 
-  final List<Map<String, dynamic>> questions = [
-    {
-      "id": 1,
-      "question": "Qual é a capital da França?",
-      "options": ["Paris", "Londres", "Berlim", "Roma"],
-      "correctAnswer": "Paris",
-    },
-    {
-      "id": 2,
-      "question": "Quanto é 2 + 2?",
-      "options": ["3", "4", "5", "6"],
-      "correctAnswer": "4",
-    },
-    {
-      "id": 3,
-      "question": "Quem escreveu 'Dom Quixote'?",
-      "options": [
-        "Miguel de Cervantes",
-        "William Shakespeare",
-        "Victor Hugo",
-        "Jorge Amado"
-      ],
-      "correctAnswer": "Miguel de Cervantes",
-    },
-  ];
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: lightColor,
+      body: FutureBuilder<Map>(
+        future: proofData,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text("Erro ao carregar dados: ${snapshot.error}"),
+            );
+          } else if (snapshot.hasData) {
+            final data = snapshot.data!;
+            final questions = data["questions"] as List<dynamic>;
 
+            return ExamContent(
+              questions: questions,
+              fullname: fullname,
+              token: token,
+              profileId: id,
+              idCourse: widget.idProof,
+              nameCourse: widget.nameCourse,
+            );
+          } else {
+            return Center(
+              child: Text("Nenhum dado encontrado."),
+            );
+          }
+        },
+      ),
+    );
+  }
+}
+
+class ExamContent extends StatefulWidget {
+  const ExamContent({
+    Key? key,
+    required this.questions,
+    required this.fullname,
+    required this.token,
+    required this.profileId,
+    required this.idCourse,
+    required this.nameCourse,
+  }) : super(key: key);
+
+  final List<dynamic> questions;
+  final String fullname;
+  final String token;
+  final String profileId;
+  final int idCourse;
+  final String nameCourse;
+
+  @override
+  State<ExamContent> createState() => _ExamContentState();
+}
+
+class _ExamContentState extends State<ExamContent> {
   int currentQuestionIndex = 0;
   String? selectedOption;
   int score = 0;
 
   void checkAnswer() {
-    final currentQuestion = questions[currentQuestionIndex];
+    final currentQuestion = widget.questions[currentQuestionIndex];
     if (selectedOption == currentQuestion["correctAnswer"]) {
       score++;
     }
 
-    if (currentQuestionIndex < questions.length - 1) {
+    if (currentQuestionIndex < widget.questions.length - 1) {
       setState(() {
         currentQuestionIndex++;
         selectedOption = null;
       });
     } else {
-      double percentage = (score / questions.length) * 100;
+      double percentage = (score / widget.questions.length) * 100;
       if (percentage >= 70) {
         EasyLoading.showSuccess("Certificado enviado para seu currículo!");
         RemoteAuthService().putAddCerfiticates(
-          fullname: fullname,
-          token: token,
+          token: widget.token,
           id: widget.idCourse.toString(),
-          profileId: id,
+          profileId: widget.profileId,
         );
-        // Redireciona para um `SizedBox`
+        // Redireciona para resultado de sucesso
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => SucessExamResult(
-                nameCourse: widget.nameCourse,
-                resultNumber: "${percentage.toString()}%"),
+              nameCourse: widget.nameCourse,
+              resultNumber: "${percentage.toStringAsFixed(2)}%",
+            ),
           ),
         );
       } else {
-        // Exibe mensagem de erro
+        // Redireciona para resultado de falha
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                FailedExamResult(resultNumber: "${percentage.toString()}%"),
+            builder: (context) => FailedExamResult(
+              resultNumber: "${percentage.toStringAsFixed(2)}%",
+            ),
           ),
         );
-        setState(() {
-          currentQuestionIndex = 0;
-          selectedOption = null;
-          score = 0; // Reseta a pontuação para tentar novamente
-        });
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final currentQuestion = questions[currentQuestionIndex];
+    final currentQuestion = widget.questions[currentQuestionIndex];
 
-    return Scaffold(
-      backgroundColor: lightColor,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: defaultPadding,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                MainHeader(
-                    title: "${currentQuestionIndex + 1}/${questions.length}",
-                    icon: Icons.arrow_back_ios,
-                    onClick: () {
-                      (Navigator.pop(context));
-                    }),
-              ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: defaultPadding,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              MainHeader(
+                  title:
+                      "${currentQuestionIndex + 1}/${widget.questions.length}",
+                  icon: Icons.arrow_back_ios,
+                  onClick: () {
+                    Navigator.pop(context);
+                  }),
+            ],
+          ),
+        ),
+        SizedBox(height: 25),
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              color: SecudaryColor,
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(20)),
             ),
-          ),
-          SizedBox(
-            height: 25,
-          ),
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                  color: SecudaryColor,
-                  borderRadius:
-                      BorderRadius.only(topLeft: Radius.circular(20))),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ListView(
-                  children: [
-                    const SizedBox(height: 16),
-                    SubText(
-                      text: currentQuestion["question"],
-                      color: nightColor,
-                      align: TextAlign.start,
-                    ),
-                    const SizedBox(height: 16),
-                    ...currentQuestion["options"].map<Widget>((option) {
-                      return RadioListTile<String>(
-                        title: SubText(
-                          text: option,
-                          align: TextAlign.start,
-                        ),
-                        value: option,
-                        groupValue: selectedOption,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedOption = value;
-                          });
-                        },
-                      );
-                    }).toList(),
-                    const SizedBox(height: 16),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                            currentQuestionIndex == questions.length - 1
-                                ? SeventhColor // Verde na última questão
-                                : Theme.of(context).primaryColor, // Cor padrão
-                          ),
-                        ),
-                        onPressed: selectedOption != null ? checkAnswer : null,
-                        child: SecundaryText(
-                          color: lightColor,
-                          text: currentQuestionIndex == questions.length - 1
-                              ? "Finalizar"
-                              : "Próximo", // Altere o texto do botão na última questão
-                          align: TextAlign.start,
-                        ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ListView(
+                children: [
+                  SubText(
+                    text: currentQuestion["question"],
+                    color: nightColor,
+                    align: TextAlign.start,
+                  ),
+                  ...currentQuestion["options"].map<Widget>((option) {
+                    return RadioListTile<String>(
+                      title: SubText(
+                        text: option,
+                        align: TextAlign.start,
                       ),
-                    ),
-                  ],
-                ),
+                      value: option,
+                      groupValue: selectedOption,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedOption = value;
+                        });
+                      },
+                    );
+                  }).toList(),
+                  GestureDetector(
+                    onTap: selectedOption != null ? checkAnswer : null,
+                    child: currentQuestionIndex == widget.questions.length - 1
+                        ? DefaultButton(
+                            text: "Finalizar",
+                            color: SeventhColor,
+                            colorText: nightColor,
+                          )
+                        : DefaultCircleButton(
+                            color: PrimaryColor,
+                            iconColor: lightColor,
+                            onClick: () {},
+                            icon: Icons.skip_next,
+                          ),
+                  ),
+                ],
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

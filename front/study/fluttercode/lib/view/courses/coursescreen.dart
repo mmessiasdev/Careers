@@ -270,7 +270,8 @@ class _CourseScreenState extends State<CourseScreen> {
                                               MaterialPageRoute(
                                                 builder: (context) =>
                                                     ExamsScreen(
-                                                  idCourse: render["id"],
+                                                  idProof: render["proof"]
+                                                      ["id"],
                                                   nameCourse: render["title"],
                                                 ),
                                               ),
