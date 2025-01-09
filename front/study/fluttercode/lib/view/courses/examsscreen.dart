@@ -182,10 +182,13 @@ class _ExamContentState extends State<ExamContent> {
               padding: const EdgeInsets.all(16.0),
               child: ListView(
                 children: [
-                  SubText(
+                  SecundaryText(
                     text: currentQuestion["question"],
                     color: nightColor,
                     align: TextAlign.start,
+                  ),
+                  SizedBox(
+                    height: 25,
                   ),
                   ...currentQuestion["options"].map<Widget>((option) {
                     return RadioListTile<String>(
@@ -202,21 +205,30 @@ class _ExamContentState extends State<ExamContent> {
                       },
                     );
                   }).toList(),
-                  GestureDetector(
-                    onTap: selectedOption != null ? checkAnswer : null,
-                    child: currentQuestionIndex == widget.questions.length - 1
-                        ? DefaultButton(
-                            text: "Finalizar",
-                            color: SeventhColor,
-                            colorText: nightColor,
-                          )
-                        : DefaultCircleButton(
-                            color: PrimaryColor,
-                            iconColor: lightColor,
-                            onClick: () {},
-                            icon: Icons.skip_next,
-                          ),
+                  SizedBox(
+                    height: 50,
                   ),
+                  GestureDetector(
+                      onTap: selectedOption != null ? checkAnswer : null,
+                      child: Column(
+                        children: [
+                          currentQuestionIndex == widget.questions.length - 1
+                              ? DefaultButton(
+                                  padding: defaultPadding,
+                                  text: "Finalizar",
+                                  color: SeventhColor,
+                                  colorText: lightColor,
+                                  icon: Icons.check,
+                                )
+                              : DefaultButton(
+                                  padding: defaultPadding,
+                                  text: "Próximo",
+                                  icon: Icons.arrow_right_rounded,
+                                  color: PrimaryColor,
+                                  colorText: lightColor,
+                                )
+                        ],
+                      )),
                 ],
               ),
             ),
